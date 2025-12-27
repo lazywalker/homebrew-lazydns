@@ -27,7 +27,6 @@ class Lazydns < Formula
 
   def install
     bin.install "lazydns"
-    etc.install "config.yaml" => "lazydns/config.yaml"
   end
 
   service do
