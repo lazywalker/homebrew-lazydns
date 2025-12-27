@@ -79,10 +79,10 @@ main() {
 
     # Define URLs
     GITHUB_REPO="https://github.com/lazywalker/lazydns"
-    ARM_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-aarch64-apple-darwin.tar.gz"
-    INTEL_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-x86_64-apple-darwin.tar.gz"
-    LINUX_ARM_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-aarch64-unknown-linux-gnu.tar.gz"
-    LINUX_X86_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-x86_64-unknown-linux-gnu.tar.gz"
+    ARM_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-full-aarch64-apple-darwin.tar.gz"
+    INTEL_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-full-x86_64-apple-darwin.tar.gz"
+    LINUX_ARM_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-full-aarch64-unknown-linux-gnu.tar.gz"
+    LINUX_X86_URL="${GITHUB_REPO}/releases/download/v${VERSION}/lazydns-full-x86_64-unknown-linux-gnu.tar.gz"
 
     info "Calculating checksums for version ${VERSION}..."
     echo
