@@ -1,4 +1,4 @@
-class Rgrc < Formula
+class Lazydns < Formula
   desc "A DNS server/forwarder implementation in Rust, inspired by mosdns"
   homepage "https://github.com/lazywalker/lazydns"
   version "0.2.43"
