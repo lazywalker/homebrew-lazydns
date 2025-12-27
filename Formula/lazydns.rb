@@ -34,7 +34,7 @@ class Lazydns < Formula
     (etc/"lazydns").mkpath
     config_file = etc/"lazydns/config.yaml"
     unless config_file.exist?
-      config_file.write((pkgshare/"config.yaml").read)
+      cp pkgshare/"config.yaml", config_file
     end
   end
 
