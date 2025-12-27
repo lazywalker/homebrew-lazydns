@@ -33,7 +33,9 @@ class Lazydns < Formula
   def post_install
     (etc/"lazydns").mkpath
     config_file = etc/"lazydns/config.yaml"
-    config_file.write(pkgshare/"config.yaml").read unless config_file.exist?
+    unless config_file.exist?
+      config_file.write((pkgshare/"config.yaml").read)
+    end
   end
 
   service do
