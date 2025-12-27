@@ -26,8 +26,14 @@ class Lazydns < Formula
   end
 
   def install
-    etc.install "config.yaml", "lazydns/config.yaml"
     bin.install "lazydns"
+    pkgshare.install "config.yaml"
+  end
+
+  def post_install
+    (etc/"lazydns").mkpath
+    config_file = etc/"lazydns/config.yaml"
+    config_file.write(pkgshare/"config.yaml").read unless config_file.exist?
   end
 
   service do
@@ -38,10 +44,12 @@ class Lazydns < Formula
 
   def caveats
     <<~EOS
-      To set up lazydns, you may want to edit the configuration file at:
+      A default configuration file has been installed to:
         #{etc}/lazydns/config.yaml
-        Then, you can start the service with:
-            brew services start lazydns
+
+      You can edit this file to customize your settings.
+      Then, start the service with:
+        brew services start lazydns
 
     EOS
   end
