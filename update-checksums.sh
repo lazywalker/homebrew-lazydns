@@ -124,53 +124,81 @@ main() {
     info "Linux x86_64 SHA256: ${LINUX_X86_SHA256}"
     echo
 
-    # Update formula file
-    info "Updating formula file..."
+        # Update formula file
+        info "Updating formula file..."
 
-    # Read the file and update checksums using Ruby (most reliable cross-platform)
-    ruby -i.tmp -pe "
-        state = ''
-        $_.each_line do |line|
-            if line =~ /on_arm do/
-                state = 'arm'
-            elsif line =~ /on_intel do/
-                state = 'intel'
-            elsif line =~ /on_linux do/
-                state = 'linux'
-            elsif line =~ /^  end/ and state != ''
-                state = ''
+        # Use an embedded Ruby script to safely replace sha256 entries within
+        # the platform blocks (on_arm, on_intel, on_linux).
+                ruby - "$FORMULA_FILE" "$ARM_SHA256" "$INTEL_SHA256" "$LINUX_ARM_SHA256" "$LINUX_X86_SHA256" <<'RUBY'
+filename = ARGV.shift
+arm = ARGV.shift
+intel = ARGV.shift
+linux_arm = ARGV.shift
+linux_x86 = ARGV.shift
+text = File.read(filename)
+lines = text.lines
+
+# Use a simple stack to track nested on_* blocks so we correctly
+# identify when a sha256 belongs to mac (on_arm/on_intel) vs
+# linux (on_linux -> on_arm/on_intel nested).
+stack = []
+
+lines.map! do |line|
+    case line
+    when /on_arm do/
+        stack.push('arm')
+        line
+    when /on_intel do/
+        stack.push('intel')
+        line
+    when /on_linux do/
+        stack.push('linux')
+        line
+    when /^\s*end/
+        stack.pop unless stack.empty?
+        line
+    when /sha256\s+"[^"]+"/
+        # Decide replacement based on stack context
+        if stack.include?('linux')
+            # we're inside an on_linux block; pick by the nearest nested platform
+            if stack.last == 'arm' || (stack.reverse.index('arm') && stack.reverse.index('arm') < stack.reverse.index('intel'))
+                line.sub(/sha256\s+"[^"]+"/, "sha256 \"#{linux_arm}\"")
+            else
+                line.sub(/sha256\s+"[^"]+"/, "sha256 \"#{linux_x86}\"")
             end
-            if state == 'arm' and line =~ /sha256 \"[0-9a-f]{64}\"/
-                if $. < 20  # approximate line for macOS ARM
-                    line.gsub!(/sha256 \"[0-9a-f]{64}\"/, \"sha256 \\\"${ARM_SHA256}\\\"\")
-                else
-                    line.gsub!(/sha256 \"[0-9a-f]{64}\"/, \"sha256 \\\"${LINUX_ARM_SHA256}\\\"\")
-                end
-            elsif state == 'intel' and line =~ /sha256 \"[0-9a-f]{64}\"/
-                if $. < 30  # approximate for macOS Intel
-                    line.gsub!(/sha256 \"[0-9a-f]{64}\"/, \"sha256 \\\"${INTEL_SHA256}\\\"\")
-                else
-                    line.gsub!(/sha256 \"[0-9a-f]{64}\"/, \"sha256 \\\"${LINUX_X86_SHA256}\\\"\")
-                end
+        else
+            # not inside on_linux: regular mac arm/intel
+            if stack.last == 'arm'
+                line.sub(/sha256\s+"[^"]+"/, "sha256 \"#{arm}\"")
+            elsif stack.last == 'intel'
+                line.sub(/sha256\s+"[^"]+"/, "sha256 \"#{intel}\"")
+            else
+                line
             end
         end
-    " "$FORMULA_FILE"
-    rm -f "${FORMULA_FILE}.tmp"
-
-    # Verify changes
-    if grep -q "${ARM_SHA256}" "$FORMULA_FILE" && grep -q "${INTEL_SHA256}" "$FORMULA_FILE"; then
-        info "Formula file updated successfully!"
-        echo
-        info "Changes made:"
-        echo "  ARM64:  ${ARM_SHA256}"
-        echo "  Intel:  ${INTEL_SHA256}"
-        echo "  Linux:  ${LINUX_SHA256}"
-        echo
-        info "You can review the changes with: git diff ${FORMULA_FILE}"
     else
-        error "Failed to update formula file. Use 'git restore ${FORMULA_FILE}' to revert."
-        exit 1
-    fi
+        line
+    end
+end
+
+File.write(filename, lines.join)
+RUBY
+
+        # Verify changes
+        if grep -q "${ARM_SHA256}" "$FORMULA_FILE" && grep -q "${INTEL_SHA256}" "$FORMULA_FILE" && grep -q "${LINUX_ARM_SHA256}" "$FORMULA_FILE" && grep -q "${LINUX_X86_SHA256}" "$FORMULA_FILE"; then
+                info "Formula file updated successfully!"
+                echo
+                info "Changes made:"
+                echo "  ARM64 (mac):  ${ARM_SHA256}"
+                echo "  Intel (mac):  ${INTEL_SHA256}"
+                echo "  Linux ARM:    ${LINUX_ARM_SHA256}"
+                echo "  Linux x86_64: ${LINUX_X86_SHA256}"
+                echo
+                info "You can review the changes with: git diff ${FORMULA_FILE}"
+        else
+                error "Failed to update formula file. Use 'git restore ${FORMULA_FILE}' to revert."
+                exit 1
+        fi
 }
 
 # Run main function

@@ -6,22 +6,22 @@ class Lazydns < Formula
 
   on_arm do
     url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-aarch64-apple-darwin.tar.gz"
-    sha256 "e4d40fdd6ea356e0f2afe098744c4cb9d1f149fd1ec922eef5901b1fc96caec6"
+    sha256 "8de9016528a4beaebbce018f90562bba9832ca7a2d5464624dbe5483048e4d07"
   end
 
   on_intel do
     url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-x86_64-apple-darwin.tar.gz"
-    sha256 "ac65de737c1e05536d37f574ee57d99467406698f5b11ff5d5ff3f16c23b3fc6"
+    sha256 "3ee982c2b65b04321541cfed7aafd3e77eb2c9b6e28107a9dee554cde9266241"
   end
 
   on_linux do
     on_intel do
       url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "6c303d613a843afeb00f6dc38dbde2f446a4352b0f09c873ec41bfdaaef70898"
+      sha256 "867071535910be989a81ea1f2c00b5f258c58491a8f4b1e087b41bf94f6de612"
     end
     on_arm do
       url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "94d532613ca95e027afad11f0b76f5f7d5687ea1bad36b022d0b68b532b88d73"
+      sha256 "2b0e339c322576260613ea5ba389b7966f21ee1ccb948a013b0713f4e72b261d"
     end
   end
 
