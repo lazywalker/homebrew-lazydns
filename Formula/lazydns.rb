@@ -1,27 +1,27 @@
 class Lazydns < Formula
   desc "A DNS server/forwarder implementation in Rust, inspired by mosdns"
   homepage "https://github.com/lazywalker/lazydns"
-  version "0.2.52"
+  version "0.2.60"
   license "GPL-3.0-or-later"
 
   on_arm do
     url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-aarch64-apple-darwin.tar.gz"
-    sha256 "e487b20f1eda80229f0f3b2fb47d47e02c62f18874f2379c1de0b7081685aa92"
+    sha256 "6517c7ff148487a6b2648264d1334f3e1f59dd747e5b68dddb2c34c64290cfb2"
   end
 
   on_intel do
     url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-x86_64-apple-darwin.tar.gz"
-    sha256 "a5af4764acd57ca4decad90bc1c4b2cc1e03fabd72694f724022a885125f79d7"
+    sha256 "a30157e81455dfe8655e5aa8ea30b4f8a58633820d3cdc21df82e6143c3704dc"
   end
 
   on_linux do
     on_intel do
       url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-x86_64-unknown-linux-gnu.tar.gz"
-      sha256 "38c5427d19ab64d0e7f19d8768b7a1939e72f9144a96f1c9dc74cf1d9a69c680"
+      sha256 "29a755b31ab65ad146c5436e22ba545a5a43b7650b75c8c129d4e872778a1ef3"
     end
     on_arm do
       url "https://github.com/lazywalker/lazydns/releases/download/v#{version}/lazydns-full-aarch64-unknown-linux-gnu.tar.gz"
-      sha256 "e6627e5d55012338c9ca05fe1df69e977cfaba09d29a80d71d8eb18e3961003f"
+      sha256 "c2ce71692540b25091ec3e1632f3c80390479701e6de28356276bb8344987276"
     end
   end
 
